@@ -10,7 +10,7 @@ import ru.skillbranch.skillarticles.extensions.format
 
 
 class ArticleViewModel(private val articleId: String) :
-    BaseViewModel<ArticleState>(ArticleState()) {
+    BaseViewModel<ArticleState>(ArticleState()), IArticleViewModel {
     private val repository = ArticleRepository
 
 
@@ -62,24 +62,24 @@ class ArticleViewModel(private val articleId: String) :
         return repository.loadArticlePersonalInfo(articleId)
     }
 
-    fun handleNightMode() {
+    override fun handleNightMode() {
         val settings = currentState.toAppSettings()
         repository.updateSettings(settings.copy(isDarkMode = !settings.isDarkMode))
     }
 
-    fun handleUpText() {
+    override fun handleUpText() {
         repository.updateSettings(currentState.toAppSettings().copy(isBigText = true))
     }
 
-    fun handleDownText() {
+    override fun handleDownText() {
         repository.updateSettings(currentState.toAppSettings().copy(isBigText = false))
     }
 
-    fun handleBookmark() {
+    override fun handleBookmark() {
 
     }
 
-    fun handleLike() {
+    override fun handleLike() {
         val toggleLike:()-> Unit = {
             val info = currentState.toArticlePersonalInfo()
             repository.updateArticlePersonalInfo(info.copy(isLike =  !info.isLike))
@@ -97,12 +97,12 @@ class ArticleViewModel(private val articleId: String) :
         notify(msg)
     }
 
-    fun handleShare() {
+    override fun handleShare() {
         val msg = "Share is not implemented"
         notify(Notify.ErrorMessage(msg, "OK", null))
     }
 
-    fun handleToggleMenu() {
+    override fun handleToggleMenu() {
         updateState { it.copy(isShowMenu = !it.isShowMenu) }
     }
 
