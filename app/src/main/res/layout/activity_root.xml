@@ -22,7 +22,7 @@
             app:layout_scrollFlags="scroll|enterAlwaysCollapsed"
             android:elevation="4dp"
             android:theme="@style/ArticleBarsTheme"
-            style="@style/ArticleToolbar"/>
+            style="@style/ArticleToolbar" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -58,6 +58,7 @@
         android:layout_gravity="bottom"
         android:theme="@style/ArticleBarsTheme"
         android:elevation="4dp"
-        app:layout_insetEdge="bottom"/>
+        app:layout_insetEdge="bottom"
+        app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
