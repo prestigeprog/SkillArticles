@@ -12,6 +12,7 @@ import ru.skillbranch.skillarticles.extensions.format
 class ArticleViewModel(private val articleId: String) :
     BaseViewModel<ArticleState>(ArticleState()), IArticleViewModel {
     private val repository = ArticleRepository
+    private var menuIsShown: Boolean = false
 
 
     init {
@@ -20,6 +21,7 @@ class ArticleViewModel(private val articleId: String) :
             state.copy(
                 shareLink = article.shareLink,
                 title = article.title,
+                author = article.author,
                 category = article.category,
                 categoryIcon = article.categoryIcon,
                 date = article.date.format()
@@ -76,7 +78,11 @@ class ArticleViewModel(private val articleId: String) :
     }
 
     override fun handleBookmark() {
+        val info = currentState.toArticlePersonalInfo()
+        repository.updateArticlePersonalInfo(info.copy(isBookmark = !info.isBookmark))
 
+        val msg = if(currentState.isBookmark) "Add to bookmarks" else "Remove from bookmarks"
+        notify(Notify.TextMessage(msg))
     }
 
     override fun handleLike() {
@@ -100,6 +106,22 @@ class ArticleViewModel(private val articleId: String) :
     override fun handleShare() {
         val msg = "Share is not implemented"
         notify(Notify.ErrorMessage(msg, "OK", null))
+    }
+
+    fun hideMenu() {
+        updateState { it.copy(isShowMenu = false) }
+    }
+
+    fun showMenu() {
+        updateState { it.copy(isShowMenu = menuIsShown) }
+    }
+
+    fun handleSearchQuery(query:String?) {
+        updateState { it.copy(searchQuery = query) }
+    }
+
+    fun handleIsSearch(isSearch: Boolean) {
+        updateState { it.copy(isSearch = isSearch) }
     }
 
     override fun handleToggleMenu() {
