@@ -2,20 +2,12 @@ package ru.skillbranch.skillarticles.ui.custom.behaviors
 
 import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.math.MathUtils
 import androidx.core.view.ViewCompat
 import ru.skillbranch.skillarticles.ui.custom.Bottombar
 
 class BottombarBehavior() : CoordinatorLayout.Behavior<Bottombar>() {
-    private var height: Int = 0
 
-    override fun onLayoutChild(
-        parent: CoordinatorLayout,
-        child: Bottombar,
-        layoutDirection: Int
-    ): Boolean {
-        height = child.height
-        return super.onLayoutChild(parent, child, layoutDirection)
-    }
 
     override fun onStartNestedScroll(
         coordinatorLayout: CoordinatorLayout,
@@ -28,29 +20,18 @@ class BottombarBehavior() : CoordinatorLayout.Behavior<Bottombar>() {
         return axes == ViewCompat.SCROLL_AXIS_VERTICAL
     }
 
-    override fun onNestedScroll(
+    override fun onNestedPreScroll(
         coordinatorLayout: CoordinatorLayout,
         child: Bottombar,
         target: View,
-        dxConsumed: Int,
-        dyConsumed: Int,
-        dxUnconsumed: Int,
-        dyUnconsumed: Int,
-        type: Int,
-        consumed: IntArray
+        dx: Int,
+        dy: Int,
+        consumed: IntArray,
+        type: Int
     ) {
-        if (dyConsumed > 0) {
-            swipeDown(child)
-        } else if (dyConsumed < 0)
-            swipeUp(child)
+        val offset = MathUtils.clamp(child.translationY + dy, 0f, child.minHeight.toFloat())
+        if(offset!=child.translationY) child.translationY = offset
+        super.onNestedPreScroll(coordinatorLayout, child, target, dx, dy, consumed, type)
     }
 
-    fun swipeDown(child : Bottombar) {
-        child.clearAnimation()
-        child.animate().translationY(0F).setDuration(200)
-    }
-    fun swipeUp(child: Bottombar) {
-        child.clearAnimation()
-        child.animate().translationY(height.toFloat()).setDuration(200)
-    }
 }
